@@ -20,6 +20,12 @@
   version = "v0.8.0"
 
 [[projects]]
+  name = "github.com/sirupsen/logrus"
+  packages = ["."]
+  revision = "c155da19408a8799da419ed3eeb0cb5db0ad5dbc"
+  version = "v1.0.5"
+
+[[projects]]
   branch = "master"
   name = "github.com/templexxx/cpufeat"
   packages = ["."]
@@ -53,6 +59,7 @@
     "pbkdf2",
     "salsa20",
     "salsa20/salsa",
+    "ssh/terminal",
     "tea",
     "twofish",
     "xtea"
@@ -70,9 +77,18 @@
   ]
   revision = "afe8f62b1d6bbd81f31868121a50b06d8188e1f9"
 
+[[projects]]
+  branch = "master"
+  name = "golang.org/x/sys"
+  packages = [
+    "unix",
+    "windows"
+  ]
+  revision = "a200a19cb90b19de298170992778b1fda7217bd6"
+
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "9a9fb0304ffc589d95ea0a478ab4bcce17857b5d522c614f657056ade0d27b8d"
+  inputs-digest = "4e955bf300e354ea285d42d804444c0babeda4d7b5bdcbcc0e688e4e9243f1e3"
   solver-name = "gps-cdcl"
   solver-version = 1
