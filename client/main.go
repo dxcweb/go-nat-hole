@@ -1,12 +1,8 @@
 package main
 
 import (
-	"fmt"
-	"log"
 	"os"
 
-	"github.com/dxcweb/go-nat-hole/common"
-	"github.com/sirupsen/logrus"
 	"github.com/urfave/cli"
 )
 
@@ -26,32 +22,17 @@ func main() {
 		},
 		cli.StringFlag{
 			Name:  "remoteaddr, r",
-			Value: "127.0.0.1:29900",
+			Value: "127.0.0.1:18888",
 			Usage: "intermediary地址",
 		},
 	}
-	myApp.Action = func(c *cli.Context) error {
+	myApp.Action = func(c *cli.Context) {
 		config := Config{}
 		config.Key = c.String("key")
 		config.LocalAddr = c.String("localaddr")
 		config.RemoteAddr = c.String("remoteaddr")
 
-		conn, err := common.UDPClient(config.Key, config.LocalAddr, config.RemoteAddr)
-		if err != nil {
-			logrus.Error("UDP客户端启动失败：", err)
-			return err
-		}
-		_, err = conn.Write([]byte{1, 2})
-		fmt.Println("err", err)
-		for {
-			data := make([]byte, 1024)
-			n, err := conn.Read(data)
-			if err != nil {
-				log.Printf("error during read: %s\n", err)
-			} else {
-				log.Printf("收到数据:%s\n", data[:n])
-			}
-		}
+		RunClient(config)
 	}
 	myApp.Run(os.Args)
 }
