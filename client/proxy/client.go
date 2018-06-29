@@ -42,7 +42,14 @@ func handleClient(conn *kcp.UDPSession, config *conf.Config) error {
 		close(findServerChan)
 		time.Sleep(time.Second * 1)
 	}()
-	p.Write([]byte{3, 3, 3})
+	go func() {
+		for {
+			logrus.Info("写入数据", p.RemoteAddr())
+			p.Write([]byte{3, 3, 3})
+			time.Sleep(time.Second * 1)
+		}
+	}()
+
 	for {
 		buf := make([]byte, 1024)
 		nr, er := p.Read(buf)

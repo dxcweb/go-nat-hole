@@ -13,7 +13,7 @@ A->NAT-B:开始通讯
 
 ## build
 ``
-CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build ./intermediary/*
+CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build ./bootstrap/intermediary/main.go
 ``
 
 

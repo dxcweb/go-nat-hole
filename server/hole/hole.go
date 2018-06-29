@@ -16,11 +16,12 @@ func CreateHole(config *conf.Config, clientAddr, clientID string) {
 	conn := newUdpconn(config.Key)
 	pc, _ := openStream(config.Key, clientAddr, conn)
 	pi, _ := openStream(config.Key, config.RemoteAddr, conn)
+	logrus.Info("开始打洞目标地址：", pc.RemoteAddr())
 	pc.Write([]byte{1})
-	pc.Close()
+	time.Sleep(time.Second * 1)
+	// pc.Close()
 	sendCreateHoleFinish(pi, clientID)
 	pi.Close()
-	time.Sleep(time.Second * 2)
 }
 
 func openStream(key, raddr string, conn *net.UDPConn) (*smux.Stream, error) {
@@ -48,7 +49,6 @@ func newServer(key string, conn *net.UDPConn) error {
 		logrus.Error("监听UDP端口失败：", err)
 		return err
 	}
-	logrus.Info("中aaaa启动成功端口为:")
 	for {
 		if conn, err := lis.AcceptKCP(); err == nil {
 			common.SetConnOption(conn)
@@ -61,7 +61,7 @@ func newServer(key string, conn *net.UDPConn) error {
 
 // 多路复用
 func handleMux(conn *common.CompStream) {
-	fmt.Println(123123)
+	fmt.Println(123123, conn.RemoteAddr())
 	smuxConfig := common.SmuxConfig()
 	mux, err := smux.Server(conn, smuxConfig)
 	if err != nil {

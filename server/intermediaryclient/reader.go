@@ -18,7 +18,6 @@ func reader(p io.WriteCloser, buf []byte, registerChan chan int, config *conf.Co
 		break
 	case common.FlagCreateHole:
 		data := string(buf[1:])
-		logrus.Info("收到打洞申请", data)
 		dataArr := strings.Split(data, "|")
 		hole.CreateHole(config, dataArr[0], dataArr[1])
 		break
