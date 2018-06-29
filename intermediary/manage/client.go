@@ -1,0 +1,5 @@
+package manage
+
+func aa() {
+
+}

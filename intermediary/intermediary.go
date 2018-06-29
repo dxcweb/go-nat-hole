@@ -1,16 +1,18 @@
-package main
+package intermediary
 
 import (
 	"fmt"
-	"io"
 
 	"github.com/dxcweb/go-nat-hole/common"
+	"github.com/dxcweb/go-nat-hole/intermediary/conf"
+	"github.com/dxcweb/go-nat-hole/intermediary/handle"
+	"github.com/dxcweb/go-nat-hole/intermediary/stream"
 	"github.com/sirupsen/logrus"
 	"github.com/xtaci/smux"
 )
 
 //RunIntermediary 运行中介服务器
-func RunIntermediary(config Config) error {
+func RunIntermediary(config conf.Config) error {
 	lis, err := common.UDPServer(config.Key, config.Listen)
 	if err != nil {
 		logrus.Error("监听UDP端口失败：", err)
@@ -19,7 +21,6 @@ func RunIntermediary(config Config) error {
 	logrus.Info("中介服务器启动成功端口为:", config.Listen)
 	for {
 		if conn, err := lis.AcceptKCP(); err == nil {
-			logrus.Info("客户端链接地址为:", conn.RemoteAddr())
 			common.SetConnOption(conn)
 			go handleMux(common.NewCompStream(conn), &config)
 		} else {
@@ -29,7 +30,8 @@ func RunIntermediary(config Config) error {
 }
 
 // 多路复用
-func handleMux(conn io.ReadWriteCloser, config *Config) {
+func handleMux(conn *common.CompStream, config *conf.Config) {
+	fmt.Println(1234)
 	smuxConfig := common.SmuxConfig()
 
 	mux, err := smux.Server(conn, smuxConfig)
@@ -39,27 +41,27 @@ func handleMux(conn io.ReadWriteCloser, config *Config) {
 	}
 	defer mux.Close()
 	for {
-		fmt.Println(123)
-		p, err := mux.AcceptStream()
+		p, err := stream.AcceptStream(mux)
+		fmt.Println("aaaaa")
 		if err != nil {
-			logrus.Error("接受流:", err)
+			logrus.Error("错误123")
 			return
 		}
 		go func() {
+			defer p.Close()
 			buf := make([]byte, 32*1024)
 			for {
-				nr, er := p.Read(buf)
-				if nr > 0 {
-					fmt.Println("接受到数据", nr)
+				n, er := p.Read(buf)
+				if n > 0 {
+					handle.Reader(p, buf[0:n])
 				}
 				if er != nil {
-					if er != io.EOF {
-						logrus.Info("EOF", err)
-					}
+					// if er != io.EOF {
+					// 	logrus.Info("错误", er)
+					// }
 					break
 				}
 			}
-			logrus.Info("退出读", err)
 		}()
 	}
 }

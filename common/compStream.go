@@ -30,6 +30,16 @@ func (c *CompStream) Close() error {
 	return c.conn.Close()
 }
 
+// LocalAddr returns the local network address.
+func (c *CompStream) LocalAddr() net.Addr {
+	return c.conn.LocalAddr()
+}
+
+// LocalAddr returns the local network address.
+func (c *CompStream) RemoteAddr() net.Addr {
+	return c.conn.RemoteAddr()
+}
+
 //NewCompStream new一个流压缩
 func NewCompStream(conn net.Conn) *CompStream {
 	c := new(CompStream)
